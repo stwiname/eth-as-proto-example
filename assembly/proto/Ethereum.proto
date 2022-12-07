@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+message EthereumLog {
+  uint32 index = 1;
+  string transactionHash = 2;
+  uint32 transactionIndex = 3;
+  string blockHash = 4;
+  uint64 blockNumber = 5;
+  string address =6;
+  string data = 7;
+  repeated string topics = 8;
+}

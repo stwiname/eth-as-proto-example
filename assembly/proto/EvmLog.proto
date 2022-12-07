@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+message EVMLog {
+  string id = 1;
+  string address = 2;
+  uint64 block_height = 3;
+  /*optional*/ string topics0 = 4;
+  /*optional*/ string topics1 = 5;
+  /*optional*/ string topics2 = 6;
+  /*optional*/ string topics3 = 7;
+}

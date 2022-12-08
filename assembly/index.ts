@@ -42,3 +42,18 @@ export function transform(encodedArray:Uint8Array):Uint8Array{
 export function testTransform():Uint8Array{
     return transform(encodedArray)
 }
+
+
+export function allocate(size: i32): usize {
+    // Create a new ArrayBuffer with the specified size
+    let buffer = new ArrayBuffer(size);
+    let ptr = changetype<usize>(buffer);
+    return ptr;
+}
+
+
+export function myAbort(message: usize, fileName: usize, line: u32, column: u32):void{
+// override missing abort in env
+    // add `--use abort=assembly/index/myAbort` when run asc build
+
+}

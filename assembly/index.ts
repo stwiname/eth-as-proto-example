@@ -26,29 +26,64 @@ const encodedArray = encodeEthereumLog(inputMessage);
 
 // Handle input
 
-export function transform(encodedArray:Uint8Array):Uint8Array{
+export function transform(encodedArray: Uint8Array):Uint8Array{
   const ethereumLog = decodeEthereumLog(encodedArray);
   const evmLog = new EVMLog(
       `${ethereumLog.blockNumber}-${ethereumLog.index}`,
       ethereumLog.address,
       ethereumLog.blockNumber,
-      ethereumLog.topics[0],
-      ethereumLog.topics[1],
-      ethereumLog.topics[2]
+
   )
+
+  for(let i = 0; i < ethereumLog.topics.length; i ++) {
+    switch(i) {
+      case 0:
+        evmLog.topics0 = ethereumLog.topics[i];
+        break;
+      case 1:
+        evmLog.topics1 = ethereumLog.topics[i];
+        break;
+      case 2:
+        evmLog.topics2 = ethereumLog.topics[i];
+        break;
+      case 3:
+        evmLog.topics3 = ethereumLog.topics[i];
+        break;
+    }
+  }
+
   return encodeEVMLog(evmLog)
+}
+
+export function transformPtr(ptr: i32, len: i32, outPtr: i32): i32 {
+  const input = readBufferFromMemory(ptr, len)
+
+  const result = transform(input);
+
+  return writeBufferToMemory(outPtr, result);
+}
+
+export function readBufferFromMemory(ptr: i32, len: i32): Uint8Array {
+  let buffer = new Uint8Array(len)
+
+  for (let i = 0; i < len; i ++) {
+    buffer[i] = load<u8>(ptr + i)
+  }
+
+  return buffer;
+}
+
+export function writeBufferToMemory(ptr: i32, data: Uint8Array): i32 {
+
+  for (let i = 0; i < data.length; i ++) {
+    store<u8>(ptr + i, data[i])
+  }
+
+  return data.length; // TODO what is byteLength?
 }
 
 export function testTransform():Uint8Array{
     return transform(encodedArray)
-}
-
-
-export function allocate(size: i32): usize {
-    // Create a new ArrayBuffer with the specified size
-    let buffer = new ArrayBuffer(size);
-    let ptr = changetype<usize>(buffer);
-    return ptr;
 }
 
 
